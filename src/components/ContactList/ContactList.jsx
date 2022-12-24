@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Item = styled.li`
   :not(:last-child) {
@@ -13,7 +14,8 @@ const Button = styled.button`
   border-radius: 7px;
   padding: 3px;
   background-color: #ff000029;
-  :hover, :focus {
+  :hover,
+  :focus {
     background-color: #ff000067;
   }
 `;
@@ -33,4 +35,9 @@ export const ContactList = ({ contacts, onDeleteContact }) => {
       })}
     </ul>
   );
+};
+
+ContactList.propTypes = {
+  contacts: PropTypes.arrayOf(PropTypes.object),
+  onDeleteContact: PropTypes.func.isRequired,
 };

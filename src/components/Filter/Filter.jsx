@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Input = styled.input`
   display: block;
@@ -14,3 +15,8 @@ export const Filter = ({ value, onChange }) => (
     <Input type="text" value={value} onChange={onChange} />
   </label>
 );
+
+Filter.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+};

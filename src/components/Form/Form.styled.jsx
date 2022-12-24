@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import { Form, Field} from 'formik';
 
-
-export const StyledForm = styled(Form)`
+export const StyledForm = styled.form`
   border: 1px solid #2a2a2a;
   padding: 20px;
   display: flex;
@@ -14,7 +12,7 @@ export const StyledLabel = styled.label`
   margin-bottom: 10px;
 `;
 
-export const StyledField = styled(Field)`
+export const StyledField = styled.input`
   display: block;
   margin-top: 5px;
   width: 300px;
@@ -29,7 +27,8 @@ export const StyledBtn = styled.button`
   padding: 5px;
   margin: 0 auto;
 
-  :hover, :focus {
-background-color: white;
+  :hover,
+  :focus {
+    background-color: white;
   }
 `;
