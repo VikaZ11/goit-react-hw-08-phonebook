@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeFilter } from '../../redux/contactsSlice';
 
 const Input = styled.input`
   display: block;
@@ -9,14 +11,23 @@ const Input = styled.input`
   padding-left: 10px;
 `;
 
-export const Filter = ({ value, onChange }) => (
-  <label>
-    Filter by name:
-    <Input type="text" value={value} onChange={onChange} />
-  </label>
-);
+export const Filter = () => {
+  const filteredContacts = useSelector(state => state.contacts.contacts.filter);
+  const dispatch = useDispatch();
 
-Filter.propTypes = {
-  value: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
+  return (
+    <label>
+      Filter by name:
+      <Input
+        type="text"
+        value={filteredContacts}
+        onChange={e => dispatch(changeFilter(e.target.value.toLowerCase()))}
+      />
+    </label>
+  );
 };
+
+// Filter.propTypes = {
+//   value: PropTypes.string,
+//   onChange: PropTypes.func.isRequired,
+// };
