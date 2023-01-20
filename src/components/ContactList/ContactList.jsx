@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 // import PropTypes from 'prop-types';
-import { deleteContact } from '../../redux/contactsSlice';
+// import { deleteContact } from '../../redux/contactsSlice';
+import { getContacts, getFilter } from 'redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
+import { deleteContacts } from 'redux/operations';
 
 const Item = styled.li`
   :not(:last-child) {
@@ -23,26 +25,29 @@ const Button = styled.button`
 `;
 
 export const ContactList = () => {
-  const contacts = useSelector(state => state.contacts.contacts.items);
-  const filter = useSelector(state => state.contacts.contacts.filter);
+  const contacts = useSelector(getContacts);
+  const filterContacts = useSelector(getFilter);
   const dispatch = useDispatch();
 
   const getVisibleContacts = (contacts, filter) => {
-    if (filter === '') {
+    if (!filterContacts) {
       return contacts;
     }
+
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter)
     );
-  }
+  };
+
+  const visibleContacts = getVisibleContacts(contacts, filterContacts);
 
   return (
     <ul>
-      {getVisibleContacts(contacts, filter).map(({ id, name, number }) => {
+      {visibleContacts.map(({ id, name, phone }) => {
         return (
           <Item key={id}>
-            {name}: {number}
-            <Button type="button" onClick={() => dispatch(deleteContact(id))}>
+            {name}: {phone}
+            <Button type="button" onClick={() => dispatch(deleteContacts(id))}>
               X
             </Button>
           </Item>

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 // import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
+import { getFilter } from 'redux/selectors';
 import { changeFilter } from '../../redux/contactsSlice';
 
 const Input = styled.input`
@@ -12,7 +13,7 @@ const Input = styled.input`
 `;
 
 export const Filter = () => {
-  const filteredContacts = useSelector(state => state.contacts.contacts.filter);
+  const filteredContacts = useSelector(getFilter);
   const dispatch = useDispatch();
 
   return (

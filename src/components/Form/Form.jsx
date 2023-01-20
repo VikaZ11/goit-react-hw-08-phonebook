@@ -1,6 +1,7 @@
 // import PropTypes from 'prop-types';
-import { addContact } from '../../redux/contactsSlice';
+// import { addContact } from '../../redux/contactsSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { addContacts } from 'redux/operations';
 import { StyledForm, StyledLabel, StyledField, StyledBtn } from './Form.styled';
 
 export function ContactForm() {
@@ -20,7 +21,13 @@ export function ContactForm() {
       alert(`${name.value} is already exist in contacts.`);
       return;
     }
-    dispatch(addContact({ name: name.value, number: number.value }));
+
+    const newContact = {
+      name: name.value,
+      phone: number.value,
+    };
+
+    dispatch(addContacts(newContact));
     name.value = '';
     number.value = '';
   };

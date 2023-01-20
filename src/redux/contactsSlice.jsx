@@ -1,41 +1,108 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { addContacts, deleteContacts, fetchContacts } from './operations';
 
 const initialState = {
   contacts: {
-    items: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
+    items: [],
+    isLoading: false,
+    error: null,
   },
+  filter: '',
 };
+
+const extraActions = [fetchContacts, addContacts, deleteContacts];
+
+const getActions = type => extraActions.map(action => action[type]);
+
+const fetchContactsFulfilledReducer = (state, action) => {
+  state.contacts.items = action.payload;
+};
+
+const addContactsFulfilledReducer = (state, action) => {
+  state.contacts.items.push(action.payload);
+};
+
+const deleteContactsFulfilledReducer = (state, action) => {
+  const index = state.contacts.items.findIndex(
+    task => task.id === action.payload.id
+  );
+  state.contacts.items.splice(index, 1);
+};
+
+const anyPendingReducer = state => {
+  state.contacts.isLoading = true;
+}
+
+const anyRejectedReducer = (state, action) => {
+  state.contacts.isLoading = false;
+  state.contacts.error = action.payload;
+}
+
+const anyFulfilledReducer = (state, action) => {
+  state.contacts.isLoading = false;
+  state.contacts.error = null;
+}
 
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
-    addContact(state, action) {
-      state.contacts.items.push({
-        id: nanoid(),
-        name: action.payload.name,
-        number: action.payload.number,
-      });
-    },
-    deleteContact(state, action) {
-      state.contacts.items = state.contacts.items.filter(
-        item => item.id !== action.payload
-      );
-    },
     changeFilter(state, action) {
-      state.contacts.filter = action.payload;
+      state.filter = action.payload;
     },
   },
+  extraReducers: builder =>
+    builder
+      .addCase(fetchContacts.fulfilled, fetchContactsFulfilledReducer)
+      .addCase(addContacts.fulfilled, addContactsFulfilledReducer)
+      .addCase(deleteContacts.fulfilled, deleteContactsFulfilledReducer)
+      .addMatcher(isAnyOf(...getActions('pending')), anyPendingReducer)
+      .addMatcher(isAnyOf(...getActions('rejected')), anyRejectedReducer)
+      .addMatcher(isAnyOf(...getActions('fulfilled')), anyFulfilledReducer),
+
+  // {
+  //   [fetchContacts.pending](state) {
+  //     state.contacts.isLoading = true;
+  //   },
+  //   [fetchContacts.fulfilled](state, action) {
+  //     state.contacts.isLoading = false;
+  //     state.contacts.error = null;
+  //     state.contacts.items = action.payload;
+  //   },
+  //   [fetchContacts.rejected](state, action) {
+  //     state.contacts.isLoading = false;
+  //     state.contacts.error = action.payload;
+  //   },
+  //   [addContacts.pending](state) {
+  //     state.contacts.isLoading = true;
+  //   },
+  //   [addContacts.fulfilled](state, action) {
+  //     state.contacts.isLoading = false;
+  //     state.contacts.error = null;
+  //     state.contacts.items.push(action.payload);
+  //   },
+  //   [addContacts.rejected](state, action) {
+  //     state.contacts.isLoading = false;
+  //     state.contacts.error = action.payload;
+  //   },
+  //   [deleteContacts.pending](state) {
+  //     state.contacts.isLoading = true;
+  //   },
+  //   [deleteContacts.fulfilled](state, action) {
+  //     state.contacts.isLoading = false;
+  //     state.contacts.error = null;
+  //     const index = state.contacts.items.findIndex(
+  //       task => task.id === action.payload.id
+  //     );
+  //     state.contacts.items.splice(index, 1);
+  //   },
+  //   [deleteContacts.rejected](state, action) {
+  //     state.contacts.isLoading = false;
+  //     state.contacts.error = action.payload;
+  //   },
+  // },
 });
 
-export const { addContact, deleteContact, changeFilter } =
-  contactsSlice.actions;
+export const { changeFilter } = contactsSlice.actions;
 
 export default contactsSlice.reducer;
