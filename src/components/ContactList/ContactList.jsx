@@ -1,28 +1,8 @@
-import styled from 'styled-components';
-// import PropTypes from 'prop-types';
-// import { deleteContact } from '../../redux/contactsSlice';
-import { getContacts, getFilter } from 'redux/selectors';
+import { Avatar, Flex, Text, Button } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { getContacts, getFilter } from 'redux/contacts/selectors';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContacts } from 'redux/operations';
-
-const Item = styled.li`
-  :not(:last-child) {
-    margin-bottom: 10px;
-  }
-`;
-
-const Button = styled.button`
-  margin-left: 8px;
-  width: 30px;
-  border: 1px solid #2a2a2a;
-  border-radius: 7px;
-  padding: 3px;
-  background-color: #ff000029;
-  :hover,
-  :focus {
-    background-color: #ff000067;
-  }
-`;
+import { deleteContacts } from 'redux/contacts/operations';
 
 export const ContactList = () => {
   const contacts = useSelector(getContacts);
@@ -42,22 +22,38 @@ export const ContactList = () => {
   const visibleContacts = getVisibleContacts(contacts, filterContacts);
 
   return (
-    <ul>
-      {visibleContacts.map(({ id, name, phone }) => {
-        return (
-          <Item key={id}>
-            {name}: {phone}
-            <Button type="button" onClick={() => dispatch(deleteContacts(id))}>
-              X
-            </Button>
-          </Item>
-        );
-      })}
-    </ul>
+    <>
+      {visibleContacts.length !== 0 ? (
+        visibleContacts.map(({ id, name, number }) => {
+          return (
+            <Flex
+              key={id}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              _notLast={{ paddingBottom: '16px' }}
+            >
+              <Avatar name={name} src="https://bit.ly/broken-link" />
+
+              <Text display={'block'} width={'200px'}>
+                {name}
+              </Text>
+
+              <Text>{number}</Text>
+
+              <Button
+                type="button"
+                onClick={() => dispatch(deleteContacts(id))}
+              >
+                <DeleteIcon />
+              </Button>
+            </Flex>
+          );
+        })
+      ) : (
+        <Text textAlign={'center'} paddingTop="10px">
+          The contact book is empty.
+        </Text>
+      )}
+    </>
   );
 };
-
-// ContactList.propTypes = {
-//   contacts: PropTypes.arrayOf(PropTypes.object),
-//   onDeleteContact: PropTypes.func.isRequired,
-// };
