@@ -7,6 +7,7 @@ import {
   Input,
   InputRightElement,
   Button,
+  useToast,
 } from '@chakra-ui/react';
 import { logIn } from 'redux/auth/operations';
 
@@ -15,6 +16,7 @@ export const LoginForm = () => {
 
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
+  const toast = useToast();
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -24,7 +26,26 @@ export const LoginForm = () => {
         email: form.elements.email.value,
         password: form.elements.password.value,
       })
-    );
+    )
+      .unwrap()
+      .then(() =>
+        toast({
+          title: 'Welcome!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top-right',
+        })
+      )
+      .catch((error) =>
+        toast({
+          title: `Error2`,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top-right',
+        })
+      );
     form.reset();
   };
 

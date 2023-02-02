@@ -8,13 +8,16 @@ import {
   InputRightElement,
   Button,
   Text,
-  Link
+  Link,
+  useToast,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { Link as NavLink } from 'react-router-dom';
 import { register } from 'redux/auth/operations';
 
 export const RegisterForm = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
@@ -28,7 +31,26 @@ export const RegisterForm = () => {
         email: form.elements.email.value,
         password: form.elements.password.value,
       })
-    );
+    )
+      .unwrap()
+      .then(() =>
+        toast({
+          title: 'Welcome!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top-right',
+        })
+      )
+      .catch(() =>
+        toast({
+          title: 'Error',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top-right',
+        })
+      );;
     form.reset();
   };
 
@@ -79,6 +101,9 @@ export const RegisterForm = () => {
               </InputRightElement>
             </InputGroup>
           </FormLabel>
+          <FormHelperText>
+            The password must contain at least 7 characters.
+          </FormHelperText>
         </FormControl>
 
         <FormControl width="400px" margin={'0 auto'} paddingBottom="20px">

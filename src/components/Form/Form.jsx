@@ -27,7 +27,7 @@ export function ContactForm() {
         position: 'top-right',
       });
       name.value = '';
-      number.value = ''; 
+      number.value = '';
       return;
     }
 
